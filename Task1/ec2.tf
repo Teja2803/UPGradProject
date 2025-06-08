@@ -1,6 +1,6 @@
 resource "aws_instance" "public_ec2" {
   ami           = "ami-0e35ddab05955cf57" # Amazon Linux 2 (us-east-1)
-  instance_type = "t2.micro"
+  instance_type = "t2.medium"
   subnet_id     = aws_subnet.public["0"].id
   vpc_security_group_ids = [aws_security_group.sg_ssh_all.id]
 
@@ -11,7 +11,7 @@ resource "aws_instance" "public_ec2" {
 
 resource "aws_instance" "private_ec2_1" {
   ami           = "ami-0e35ddab05955cf57"
-  instance_type = "t2.micro"
+  instance_type = "t2.medium"
   subnet_id     = aws_subnet.private["0"].id
   vpc_security_group_ids = [aws_security_group.sg_vpc_only.id]
 
@@ -22,7 +22,7 @@ resource "aws_instance" "private_ec2_1" {
 
 resource "aws_instance" "private_ec2_2" {
   ami           = "ami-0e35ddab05955cf57"
-  instance_type = "t2.micro"
+  instance_type = "t2.medium"
   subnet_id     = aws_subnet.private["1"].id
   vpc_security_group_ids = [aws_security_group.sg_vpc_only.id]
 
