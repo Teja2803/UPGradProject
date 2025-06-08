@@ -9,3 +9,7 @@ output "public_subnet_ids" {
 output "private_subnet_ids" {
   value = [for s in aws_subnet.private : s.id]
 }
+
+output "public_ec2_ip" {
+  value = aws_instance.public_ec2.public_ip
+}
