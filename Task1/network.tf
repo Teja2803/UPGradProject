@@ -44,7 +44,7 @@ resource "aws_subnet" "private" {
 
 # Elastic IP for NAT
 resource "aws_eip" "nat" {
-  vpc = true
+  domain = "vpc"
 }
 
 # NAT Gateway
