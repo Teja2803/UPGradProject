@@ -5,7 +5,6 @@ terraform {
     }
   }
 }
-
 terraform {
   backend "s3" {
     bucket = "teja2803-terraform-bucket"

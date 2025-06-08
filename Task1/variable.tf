@@ -1,22 +1,30 @@
-variable "cidr_block" {
-    default = "10.0.0.0/16"
-    description = "cidr for VPC"
-    type = string
+variable "aws_region" {
+  description = "AWS region"
+  type        = string
 }
-variable "azs" {
-    type = list
-    default = ["ap-south-1a", "ap-south-1b"]
-    description = "AZs"
+
+variable "env" {
+  description = "Environment name (e.g., dev, prod)"
+  type        = string
+}
+
+variable "vpc_cidr" {
+  description = "VPC CIDR block"
+  type        = string
+}
+
+variable "public_subnets" {
+  description = "List of public subnet configurations"
+  type = list(object({
+    cidr = string
+    az   = string
+  }))
 }
 
 variable "private_subnets" {
-    type = list
-    default = ["10.0.1.0/24", "10.0.2.0/24"]
-    description = "private subnets"
-} 
-
-variable "public_subnets" {
-    type = list
-    default = ["10.0.101.0/24", "10.0.102.0/24"]
-    description = "public subnet"
-} 
+  description = "List of private subnet configurations"
+  type = list(object({
+    cidr = string
+    az   = string
+  }))
+}
