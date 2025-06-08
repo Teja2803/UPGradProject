@@ -1,0 +1,5 @@
+[ubuntu_servers]
+ubuntu 
+ansible_host=3.109.5.112 
+ansible_user=ubuntu 
+ansible_ssh_private_key_file=key.pem
