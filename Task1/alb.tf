@@ -15,7 +15,7 @@ resource "aws_lb_target_group" "alb_tg" {
   vpc_id   = aws_vpc.main.id
 
   health_check {
-    path                = "/"
+    path                = "/jenkins"
     protocol            = "HTTP"
     matcher             = "200"
     interval            = 30
