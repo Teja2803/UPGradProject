@@ -13,3 +13,7 @@ output "private_subnet_ids" {
 output "public_ec2_ip" {
   value = aws_instance.public_ec2.public_ip
 }
+
+output "jenkins_url" {
+  value = "http://${aws_lb.my_alb.dns_name}:8080/jenkins"
+}
