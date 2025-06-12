@@ -53,9 +53,9 @@ resource "aws_security_group" "sg_vpc_only" {
 }
 
 resource "aws_security_group" "alb_sg" {
-  name        = "alb-sg"
+  name        = "${var.env}-alb-sg"
   description = "Allow HTTP inbound traffic"
-  vpc_id      = var.vpc_id
+  vpc_id      = aws_vpc.main.id
 
   ingress {
     from_port   = 8080
