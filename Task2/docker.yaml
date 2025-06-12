@@ -49,18 +49,44 @@
         groups: docker
         append: yes
 
-    - name: Run Jenkins Docker only if tag Name is dev-ec2-private-1
-      docker_container:
+---
+- name: Install Jenkins on Ubuntu
+  hosts: jenkins
+  become: yes
+
+  tasks:
+
+    - name: Update APT package list
+      apt:
+        update_cache: yes
+
+    - name: Install Java (Jenkins dependency)
+      apt:
+        name: openjdk-11-jdk
+        state: present
+
+    - name: Add Jenkins APT repository key
+      apt_key:
+        url: https://pkg.jenkins.io/debian/jenkins.io.key
+        state: present
+
+    - name: Add Jenkins repository
+      apt_repository:
+        repo: deb https://pkg.jenkins.io/debian binary/
+        state: present
+
+    - name: Update package list after adding Jenkins repo
+      apt:
+        update_cache: yes
+
+    - name: Install Jenkins
+      apt:
         name: jenkins
-        image: jenkins/jenkins:lts
+        state: present
+
+    - name: Ensure Jenkins is started and enabled
+      systemd:
+        name: jenkins
+        enabled: yes
         state: started
-        restart_policy: always
-        published_ports:
-          - "8080:8080"
-          - "50000:50000"
-        env:
-          JENKINS_ARGS: "--prefix=/jenkins"
-          JENKINS_OPTS: "--prefix=/jenkins"
-        volumes:
-          - jenkins_data:/var/jenkins_home
-      when: ansible_ec2_tag_Name == "dev-ec2-private-1"
+  when: ansible_ec2_tag_Name == "dev-ec2-private-1"

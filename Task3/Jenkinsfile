@@ -1,0 +1,72 @@
+pipeline {
+  agent any
+
+  environment {
+    AWS_REGION = 'ap-south-1'
+    ECR_REPO = 'upgrad' // e.g., hello-world-app
+    IMAGE_TAG = "${env.BUILD_ID}"
+    ECR_REGISTRY = "154770582963.dkr.ecr.ap-south-1.amazonaws.com"
+    REMOTE_USER = 'ubuntu'
+    REMOTE_HOST = '10.0.4.74'
+    SSH_KEY_ID = 'ssh-key-id-in-jenkins'
+  }
+
+  stages {
+    stage('Checkout Code') {
+      steps {
+        checkout scm
+      }
+    }
+
+    stage('Login to AWS ECR') {
+      steps {
+        sh '''
+          aws ecr get-login-password --region $AWS_REGION | \
+          docker login --username AWS --password-stdin $ECR_REGISTRY
+        '''
+      }
+    }
+
+    stage('Build Docker Image') {
+      steps {
+        sh '''
+          docker build -t $ECR_REPO:$IMAGE_TAG .
+          docker tag $ECR_REPO:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPO:$IMAGE_TAG
+        '''
+      }
+    }
+
+    stage('Push to ECR') {
+      steps {
+        sh '''
+          docker push $ECR_REGISTRY/$ECR_REPO:$IMAGE_TAG
+        '''
+      }
+    }
+
+    stage('Deploy to EC2 App Server') {
+      steps {
+        sshagent (credentials: [env.SSH_KEY_ID]) {
+          sh """
+            ssh -o StrictHostKeyChecking=no $REMOTE_USER@$REMOTE_HOST '
+              aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY &&
+              docker pull $ECR_REGISTRY/$ECR_REPO:$IMAGE_TAG &&
+              docker stop app || true &&
+              docker rm app || true &&
+              docker run -d --name app -p 8080:8080 $ECR_REGISTRY/$ECR_REPO:$IMAGE_TAG
+            '
+          """
+        }
+      }
+    }
+  }
+
+  post {
+    failure {
+      echo "Deployment failed!"
+    }
+    success {
+      echo "App deployed successfully to EC2!"
+    }
+  }
+}
