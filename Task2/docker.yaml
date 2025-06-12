@@ -49,6 +49,38 @@
         groups: docker
         append: yes
 
+- hosts: all
+  become: true # Allows sudo privileges
+  tasks:
+    - name: Update APT cache
+      apt:
+        update_cache: yes
+    - name: Install essential packages
+      apt:
+        name:
+          - curl
+          - unzip
+          - python3-pip # or python3-venv depending on your needs
+      become: true
+    - name: Download AWS CLI installer
+      get_url:
+        url: https://s3.amazonaws.com/aws-cli/awscli-linux-x86_64-py2.7.zip
+        dest: /tmp/awscli.zip
+    - name: Extract AWS CLI installer
+      unarchive:
+        copy: no
+        dest: /tmp/
+        path: /tmp/awscli.zip
+    - name: Install AWS CLI
+      shell: "python3 -m pip install --upgrade /tmp/awscli-linux-x86_64-py2.7/awscli-1.24.0-py2.7.egg"
+      become: true # Required for shell tasks with sudo
+    - name: Verify AWS CLI installation
+      shell: "aws --version"
+      register: awscli_version
+      ignore_errors: yes
+    - debug:
+        msg: "AWS CLI Version: {{ awscli_version.stdout }}"
+
 ---
 - name: Install Jenkins on Ubuntu
   hosts: jenkins
