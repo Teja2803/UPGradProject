@@ -98,7 +98,7 @@ resource "aws_lb_listener_rule" "jenkins" {
   }
 }
 
-esource "aws_lb_listener_rule" "app" {
+resource "aws_lb_listener_rule" "app" {
   listener_arn = aws_lb_listener.alb_list2.arn
   priority     = 10
 
