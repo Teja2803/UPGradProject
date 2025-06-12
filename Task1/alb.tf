@@ -54,16 +54,7 @@ resource "aws_lb_target_group_attachment" "tg_attach2" {
   target_id        = aws_instance.private_ec2_2.id
   port             = 8080
 }
-resource "aws_lb_listener" "alb_list2" {
-  load_balancer_arn = aws_lb.my_alb.arn
-  port              = 8080
-  protocol          = "HTTP"
 
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.alb_tg2.arn
-  }
-}
 
 resource "aws_lb_target_group_attachment" "tg_attach" {
   target_group_arn = aws_lb_target_group.alb_tg.arn
