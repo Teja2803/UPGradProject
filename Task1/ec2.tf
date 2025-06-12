@@ -15,6 +15,7 @@ resource "aws_instance" "private_ec2_1" {
   instance_type = "t2.medium"
   subnet_id     = aws_subnet.private["0"].id
   vpc_security_group_ids = [aws_security_group.sg_vpc_only.id]
+  iam_instance_profile   = aws_iam_instance_profile.ec2_ecr_instance_profile.name
   key_name = "key"
 
   tags = {
@@ -27,6 +28,7 @@ resource "aws_instance" "private_ec2_2" {
   instance_type = "t2.medium"
   subnet_id     = aws_subnet.private["1"].id
   vpc_security_group_ids = [aws_security_group.sg_vpc_only.id]
+  iam_instance_profile   = aws_iam_instance_profile.ec2_ecr_instance_profile.name
   key_name = "key"
 
   tags = {

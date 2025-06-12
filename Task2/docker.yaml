@@ -48,3 +48,19 @@
         name: "{{ ansible_user }}"
         groups: docker
         append: yes
+
+    - name: Run Jenkins Docker only if tag Name is dev-ec2-private-1
+      docker_container:
+        name: jenkins
+        image: jenkins/jenkins:lts
+        state: started
+        restart_policy: always
+        published_ports:
+          - "8080:8080"
+          - "50000:50000"
+        env:
+          JENKINS_ARGS: "--prefix=/jenkins"
+          JENKINS_OPTS: "--prefix=/jenkins"
+        volumes:
+          - jenkins_data:/var/jenkins_home
+      when: ansible_ec2_tag_Name == "dev-ec2-private-1"
