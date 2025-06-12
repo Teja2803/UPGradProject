@@ -35,7 +35,7 @@ resource "aws_lb_target_group" "alb_tg2" {
   vpc_id   = aws_vpc.main.id
 
   health_check {
-    path                = "/app"
+    path                = "/"
     protocol            = "HTTP"
     matcher             = "200-399"
     interval            = 30
@@ -94,22 +94,6 @@ resource "aws_lb_listener_rule" "jenkins" {
   condition {
     path_pattern {
       values = ["/jenkins*"]
-    }
-  }
-}
-
-resource "aws_lb_listener_rule" "app" {
-  listener_arn = aws_lb_listener.alb_list2.arn
-  priority     = 10
-
-  action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.alb_tg2.arn
-  }
-
-  condition {
-    path_pattern {
-      values = ["/app*"]
     }
   }
 }
